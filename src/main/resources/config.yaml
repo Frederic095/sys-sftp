@@ -8,3 +8,4 @@ sftp:
   host: "sftp.px.bylinkr.com"
   password: "linkr2026"
   wd : "upload/theu"
+  fn: "hoinaco.csv"

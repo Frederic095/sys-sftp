@@ -127,4 +127,85 @@ filteredById map(
 			</on-error-propagate>
 		</error-handler>
 	</flow>
+	<flow name="getAbsences" doc:id="59d5bcdf-eb71-4c60-a865-951f1a0cfcca" >
+		<scheduler doc:name="Scheduler" doc:id="d08d1c59-c008-4f13-a88e-5f8a0d0ac4f5" >
+			<scheduling-strategy >
+				<fixed-frequency frequency="10" timeUnit="SECONDS"/>
+			</scheduling-strategy>
+		</scheduler>
+		<sftp:read doc:name="Read" doc:id="9f14c5a8-7c54-469d-91e5-1e788572a703" config-ref="SFTP_Config" path="${sftp.fn}" outputMimeType='application/csv'/>
+		<ee:transform doc:name="Transform Message" doc:id="48fb1925-6e99-4760-9d28-ca01a8c58c6d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/csv 
+
+
+fun typeOccupationFunction(texte)=(
+ texte match {
+        case "ACCT" -> "M"
+        case "CLD"  -> "M"
+        case "LM"   -> "M"
+        case "CLM"  -> "M"
+        case "MO"  -> "M"
+        case "MP"-> "M"
+        else -> texte
+    }
+)
+
+fun natureOccupation(nature)=(
+    nature match {
+        case "ACCT" -> "Accident de travail"
+        case "CLD" -> "Congé longue durée"
+        case "LM"-> "Congé longue maladie"
+        case "MO" -> "Congé maladie ordinaire"
+        case "MP"-> "Maladie professionnelle"
+        else -> nature
+    }
+)
+fun operationFunction(operation)=(
+    if (operation == "SUP") "S"
+    else if (operation == "CRE") "X"
+    else operation
+)
+
+fun dateFunction(dateField, jour)=(
+     (dateField as Date {format: "dd/MM/yyyy"} as String {format: "yyyyMMdd"}) ++ "000000 " ++ jour
+)
+---
+
+payload map (item)-> do{
+  var itemLine = valuesOf(item)[0] as String
+    var fields = itemLine splitBy ";"
+    ---
+    {
+    "matricule" : fields[1],
+    "codeCentre": "",
+    "typeOccupation" : typeOccupationFunction(fields[6]),
+    "natureOccupation": natureOccupation(fields[6]),
+    "dateDebut": dateFunction(fields[2], fields[8]),
+    "dateFin": dateFunction(fields[3], fields[8]),
+    "statut": "",
+    "poids": "",
+    "tempsTravail": "",
+    tempsPresenceHeures: "",
+    tempsPresenceMinutes: "",
+    idTypeCompteur: "",
+    nbTitreRestaurant: "",
+    commentaire: "",
+    "operation": operationFunction(fields[0])
+    }
+}
+
+
+
+
+
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="46462a6b-c201-425b-b688-8967e338df7e" message="#[payload]"/>
+		<sftp:write doc:name="Write Absences file" doc:id="e98f25b1-ab81-4b3b-99b4-cf2c576d86c8" config-ref="SFTP_Config" path="/upload/theu/Frederic/Absences.csv"/>
+		<sftp:read doc:name="Read file created" doc:id="dd3857bc-f2c0-467a-a796-0596dfec1513" config-ref="SFTP_Config" path="/upload/theu/Frederic/Absences.csv"/>
+		<logger level="INFO" doc:name="Logger" doc:id="c4f07000-c475-4e16-be85-25ed09f98f7e" message="#[payload]"/>
+	</flow>
 </mule>
