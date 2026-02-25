@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd ">
-    <http:listener-config name="raml_tp2-httpListenerConfig">
+    <http:listener-config name="sys-sftp-httpListenerConfig">
         <http:listener-connection host="0.0.0.0" port="8081" />
     </http:listener-config>
-    <apikit:config name="raml_tp2-config" api="raml_tp2.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
-    <flow name="raml_tp2-main">
-        <http:listener config-ref="raml_tp2-httpListenerConfig" path="/api/*">
+    <apikit:config name="sys-sftp-config" api="resource::b2f6554e-0c52-496f-bf8d-085c9f4ad625:raml_tp2:1.0.3:raml:zip:sys-sftp.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <flow name="sys-sftp-main">
+        <http:listener config-ref="sys-sftp-httpListenerConfig" path="/api/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
-                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
             </http:response>
             <http:error-response statusCode="#[vars.httpStatus default 500]">
-                <http:body><![CDATA[#[payload]]]></http:body>
-                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
             </http:error-response>
         </http:listener>
-        <apikit:router config-ref="raml_tp2-config" />
+        <apikit:router config-ref="sys-sftp-config" />
         <error-handler>
             <on-error-propagate type="APIKIT:BAD_REQUEST">
                 <ee:transform doc:name="Transform Message">
@@ -96,8 +96,8 @@ output application/json
             </on-error-propagate>
         </error-handler>
     </flow>
-    <flow name="raml_tp2-console">
-        <http:listener config-ref="raml_tp2-httpListenerConfig" path="/console/*">
+    <flow name="sys-sftp-console">
+        <http:listener config-ref="sys-sftp-httpListenerConfig" path="/console/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
                 <http:headers>#[vars.outboundHeaders default {}]</http:headers>
             </http:response>
@@ -106,7 +106,7 @@ output application/json
                 <http:headers>#[vars.outboundHeaders default {}]</http:headers>
             </http:error-response>
         </http:listener>
-        <apikit:console config-ref="raml_tp2-config" />
+        <apikit:console config-ref="sys-sftp-config" />
         <error-handler>
             <on-error-propagate type="APIKIT:NOT_FOUND">
                 <ee:transform doc:name="Transform Message">
@@ -123,12 +123,74 @@ output application/json
             </on-error-propagate>
         </error-handler>
     </flow>
-	<flow name="get:\invoices:raml_tp2-config">
-		<set-variable value='#[message.attributes.queryParams.currency default ""]' doc:name="currency" doc:id="1b0637a5-368e-44d8-8cdf-1d947bc67e9a" variableName="currency"/>
-		<flow-ref doc:name="getInvoices" doc:id="67e9f12b-2522-463f-aadf-588e6132242f" name="getInvoices"/>
+    <flow name="get:\invoices:sys-sftp-config">
+        <set-variable value="#[message.attributes.queryParams.currency default &quot;&quot;]" doc:name="[currency]" doc:id="266ecb86-950f-4a50-830f-4899bcbc6c4a" variableName="currency" />
+        <flow-ref doc:name="sub-invoice-getAll" doc:id="c3d90c6d-f36a-4f56-ba8a-e8fac4f737a8" name="sub-invoices-getAll" />
     </flow>
-    <flow name="get:\invoices\(id):raml_tp2-config">
-		<set-variable value="#[attributes.uriParams.id]" doc:name="invoiceId" doc:id="28567f05-9957-4dd0-9f2c-891a72ebe437" variableName="invoiceId"/>
-		<flow-ref doc:name="getInvoiceById" doc:id="2e990da7-b80f-49c9-8d8f-5ff54568ffbc" name="getInvoiceById"/>
+    <flow name="get:\invoices\(id):sys-sftp-config">
+        <set-variable value="#[attributes.uriParams.id]" doc:name="[invoiceId]" doc:id="2092b107-163a-44b0-b2a7-1e8021572a46" variableName="invoiceId" />
+        <flow-ref doc:name="sub-invoice-getById" doc:id="28909efd-482d-480c-8dc0-0194c224af0d" name="sub-invoice-getById" />
+    </flow>
+    <flow name="get:\products:sys-sftp-config">
+        <set-variable value='#[message.attributes.queryParams.category default ""]' doc:name="[category]" doc:id="fd8eb408-048d-4148-ae4a-4f0f936c2184" variableName="category"/>
+		<flow-ref doc:name="sub-product-getAll" doc:id="6da9ce62-0b97-4508-aed4-5ba76d306748" name="sub-product-getAll"/>
+    </flow>
+    <flow name="post:\products:application\json:sys-sftp-config">
+        <ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  correlationId: "fe5zef1-194b-475c-8dee-0zef56zf4180",
+  statusCode: 400,
+  namespace: "APIKIT",
+  identifier: "BAD_REQUEST",
+  description: "Field xxx is missing"
+} as Object {encoding: "UTF-8", mediaType: "application/json"}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
+    <flow name="post:\products\(id):sys-sftp-config">
+        <ee:transform doc:name="Transform Message">
+            <ee:variables>
+                <ee:set-variable variableName="id">attributes.uriParams.'id'</ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  correlationId: "fe5zef1-194b-475c-8dee-0zef56zf4180",
+  statusCode: 404,
+  namespace: "RESOURCE_NAME",
+  identifier: "NOT_FOUND",
+  description: "product not found with id xxx"
+} as Object {encoding: "UTF-8", mediaType: "application/json"}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
+	<flow name="delete:\products\(id):sys-sftp-config">
+        <ee:transform doc:name="Transform Message">
+            <ee:variables>
+                <ee:set-variable variableName="id">attributes.uriParams.'id'</ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  correlationId: "fe5zef1-194b-475c-8dee-0zef56zf4180",
+  statusCode: 404,
+  namespace: "RESOURCE_NAME",
+  identifier: "NOT_FOUND",
+  description: "product not found with id xxx"
+} as Object {encoding: "UTF-8", mediaType: "application/json"}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
     </flow>
 </mule>
