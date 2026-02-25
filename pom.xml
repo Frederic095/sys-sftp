@@ -64,6 +64,13 @@
 			<version>2.0.8</version>
 			<classifier>mule-plugin</classifier>
 		</dependency>
+		<dependency>
+			<groupId>b2f6554e-0c52-496f-bf8d-085c9f4ad625</groupId>
+			<artifactId>raml_tp2</artifactId>
+			<version>1.0.4</version>
+			<classifier>raml</classifier>
+			<type>zip</type>
+		</dependency>
 	</dependencies>
 
 	<repositories>

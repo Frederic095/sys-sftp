@@ -4,8 +4,9 @@
 	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/sftp http://www.mulesoft.org/schema/mule/sftp/current/mule-sftp.xsd">
-	<configuration-properties doc:name="Configuration properties" doc:id="bf32174c-fddd-4219-90a8-057d5a6db2db" file="config.yaml" />
+	
 	<sftp:config name="SFTP_Config" doc:name="SFTP Config" doc:id="86f9c6cf-7b79-486a-8142-26311a3a28e5" >
 		<sftp:connection workingDir="${sftp.wd}" host="${sftp.host}" port="${sftp.port}" username="${sftp.user}" password="${sftp.password}" />
 	</sftp:config>
+	<configuration-properties doc:name="Configuration properties" doc:id="cd33bbfd-8e56-4fb3-ac79-c0036787be52" file="${mule.env}-properties.yaml" />
 </mule>

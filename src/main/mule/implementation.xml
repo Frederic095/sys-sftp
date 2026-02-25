@@ -6,7 +6,7 @@
 http://www.mulesoft.org/schema/mule/sftp http://www.mulesoft.org/schema/mule/sftp/current/mule-sftp.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
 http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
-	<flow name="getInvoices" doc:id="5ddd7b31-f2a9-446e-8a81-d0dc46f281af" >
+	<flow name="sub-invoices-getAll" doc:id="5ddd7b31-f2a9-446e-8a81-d0dc46f281af" >
 		<sftp:read doc:name="Read" doc:id="dbfcb1e2-9400-4225-b956-70a97322bd0d" config-ref="SFTP_Config" path="invoices.json"/>
 		<ee:transform doc:name="Transform Message" doc:id="54e45901-53c5-437d-8239-316768db3a77" >
 			<ee:message >
@@ -62,7 +62,7 @@ filteredByCurrency map(
 		</ee:transform>
 		<logger level="INFO" doc:name="Logger" doc:id="2b6a8279-f776-49da-b736-16659f51b432" />
 	</flow>
-	<flow name="getInvoiceById" doc:id="ab0ddc4d-c12c-4e14-82cd-d3521100aa17" >
+	<flow name="sub-invoice-getById" doc:id="ab0ddc4d-c12c-4e14-82cd-d3521100aa17" >
 		<sftp:read doc:name="Read" doc:id="03f7eefc-973d-4782-bf63-61332bcf5410" config-ref="SFTP_Config" path="invoices.json"/>
 		<ee:transform doc:name="Transform Message" doc:id="4bf283ac-be28-4ab4-a67a-0dc69180366e" >
 			<ee:message >
@@ -123,15 +123,16 @@ filteredById map(
 		<error-handler >
 			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="b4e0fddf-f9b4-4b4d-9fb8-a2affa4fc37d" type="APP:SORRY">
 				<set-payload value='#[output json&#10;---&#10;message: "invoice not found for customer " ++ (vars.invoiceId default "unknown")]' doc:name="Invoice not found" doc:id="a99a3bbd-4d3a-4a2e-ad51-bdaf6e500514" mimeType="application/json"/>
-				<set-variable value="707" doc:name="httpStatus" doc:id="f89d00f3-e4f2-4461-a16f-db9ea8c057ee" variableName="httpStatus" mimeType="application/json"/>
+				<set-variable value="707" doc:name="[httpStatus]" doc:id="f89d00f3-e4f2-4461-a16f-db9ea8c057ee" variableName="httpStatus" mimeType="application/json"/>
 			</on-error-propagate>
 		</error-handler>
 	</flow>
-	<flow name="getAbsences" doc:id="59d5bcdf-eb71-4c60-a865-951f1a0cfcca" >
+	<flow name="impl-get-absences-every-day" doc:id="59d5bcdf-eb71-4c60-a865-951f1a0cfcca" initialState="stopped">
 		<scheduler doc:name="Scheduler" doc:id="d08d1c59-c008-4f13-a88e-5f8a0d0ac4f5" >
 			<scheduling-strategy >
-				<fixed-frequency frequency="10" timeUnit="SECONDS"/>
-			</scheduling-strategy>
+				<fixed-frequency timeUnit="DAYS" />
+			
+</scheduling-strategy>
 		</scheduler>
 		<sftp:read doc:name="Read" doc:id="9f14c5a8-7c54-469d-91e5-1e788572a703" config-ref="SFTP_Config" path="${sftp.fn}" outputMimeType='application/csv'/>
 		<ee:transform doc:name="Transform Message" doc:id="48fb1925-6e99-4760-9d28-ca01a8c58c6d" >
@@ -207,5 +208,33 @@ payload map (item)-> do{
 		<sftp:write doc:name="Write Absences file" doc:id="e98f25b1-ab81-4b3b-99b4-cf2c576d86c8" config-ref="SFTP_Config" path="/upload/theu/Frederic/Absences.csv"/>
 		<sftp:read doc:name="Read file created" doc:id="dd3857bc-f2c0-467a-a796-0596dfec1513" config-ref="SFTP_Config" path="/upload/theu/Frederic/Absences.csv"/>
 		<logger level="INFO" doc:name="Logger" doc:id="c4f07000-c475-4e16-be85-25ed09f98f7e" message="#[payload]"/>
+	</flow>
+	<flow name="sub-product-getAll" doc:id="0dc22d9e-ad4d-453f-b6aa-71941c1fbb78" >
+		<sftp:read doc:name="Read" doc:id="ed173b56-38f9-4188-bc21-5f78948d8b61" config-ref="SFTP_Config" path="${sftp.fn}" />
+		<ee:transform doc:name="Transform Message" doc:id="5159a964-060a-47f9-9c61-1d1eb44e5ac9" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output json
+
+var categoryParam = vars.category
+
+var filteredByCategory =
+    if (categoryParam == null)
+        payload
+    else
+        payload filter (
+            $.category == categoryParam
+        )
+
+
+---
+
+filteredByCategory
+
+
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="7e4af220-9a84-494d-bfd4-aa07d285f19e" message="#[payload]"/>
 	</flow>
 </mule>
