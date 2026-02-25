@@ -3,7 +3,7 @@
     <http:listener-config name="sys-sftp-httpListenerConfig">
         <http:listener-connection host="0.0.0.0" port="8081" />
     </http:listener-config>
-    <apikit:config name="sys-sftp-config" api="resource::b2f6554e-0c52-496f-bf8d-085c9f4ad625:raml_tp2:1.0.3:raml:zip:sys-sftp.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <apikit:config name="sys-sftp-config" api="resource::b2f6554e-0c52-496f-bf8d-085c9f4ad625:raml_tp2:1.0.4:raml:zip:sys-sftp.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
     <flow name="sys-sftp-main">
         <http:listener config-ref="sys-sftp-httpListenerConfig" path="/api/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
@@ -132,8 +132,8 @@ output application/json
         <flow-ref doc:name="sub-invoice-getById" doc:id="28909efd-482d-480c-8dc0-0194c224af0d" name="sub-invoice-getById" />
     </flow>
     <flow name="get:\products:sys-sftp-config">
-        <set-variable value='#[message.attributes.queryParams.category default ""]' doc:name="[category]" doc:id="fd8eb408-048d-4148-ae4a-4f0f936c2184" variableName="category"/>
-		<flow-ref doc:name="sub-product-getAll" doc:id="6da9ce62-0b97-4508-aed4-5ba76d306748" name="sub-product-getAll"/>
+        <set-variable value="#[message.attributes.queryParams.category default &quot;&quot;]" doc:name="[category]" doc:id="fd8eb408-048d-4148-ae4a-4f0f936c2184" variableName="category" />
+        <flow-ref doc:name="sub-product-getAll" doc:id="6da9ce62-0b97-4508-aed4-5ba76d306748" name="sub-product-getAll" />
     </flow>
     <flow name="post:\products:application\json:sys-sftp-config">
         <ee:transform doc:name="Transform Message">
@@ -172,7 +172,7 @@ output application/json
             </ee:message>
         </ee:transform>
     </flow>
-	<flow name="delete:\products\(id):sys-sftp-config">
+    <flow name="delete:\products\(id):sys-sftp-config">
         <ee:transform doc:name="Transform Message">
             <ee:variables>
                 <ee:set-variable variableName="id">attributes.uriParams.'id'</ee:set-variable>
