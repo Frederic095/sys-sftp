@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns="http://www.mulesoft.org/schema/mule/core"
+<mule xmlns:sftp="http://www.mulesoft.org/schema/mule/sftp" xmlns="http://www.mulesoft.org/schema/mule/core"
 	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
-	<db:config name="Database_Config" doc:name="Database Config" doc:id="2b25fa82-736c-4de4-a82b-ad6dcb28f10d" >
-		<db:generic-connection url="jdbc:postgresql://${db.host}:${db.port}/${db.database}" driverClassName="org.postgresql.Driver" user="${db.user}" password="${db.password}" />
-	</db:config>
-	<configuration-properties doc:name="Configuration properties" doc:id="7f7f0a21-b735-4718-9300-8f698c276392" file="config.yaml" />
+http://www.mulesoft.org/schema/mule/sftp http://www.mulesoft.org/schema/mule/sftp/current/mule-sftp.xsd">
+	<configuration-properties doc:name="Configuration properties" doc:id="bf32174c-fddd-4219-90a8-057d5a6db2db" file="config.yaml" />
+	<sftp:config name="SFTP_Config" doc:name="SFTP Config" doc:id="86f9c6cf-7b79-486a-8142-26311a3a28e5" >
+		<sftp:connection workingDir="${sftp.wd}" host="${sftp.host}" port="${sftp.port}" username="${sftp.user}" password="${sftp.password}" />
+	</sftp:config>
 </mule>

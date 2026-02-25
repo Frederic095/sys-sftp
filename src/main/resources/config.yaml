@@ -1,10 +1,10 @@
 http:
  port: "8081"
 
-db:
-  host: "sql.bylinkr.com"
-  port: "5436"
-  user: "training"
-  password: "training2023$"
-  database: "training-mdbp"
-  table: "order_items"
+sftp:
+  env: "loc"
+  port: "8422"
+  user: "linkr"
+  host: "sftp.px.bylinkr.com"
+  password: "linkr2026"
+  wd : "upload/theu"

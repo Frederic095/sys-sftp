@@ -1,0 +1,625 @@
+[
+    {
+        "data": {
+            "id": "in_1QX1ElB6VYcsXDpFN7ixiryP",
+            "object": "invoice",
+            "account_country": "CH",
+            "account_name": "Sandbox",
+            "account_tax_ids": null,
+            "amount_paid": 0,
+            "amount_shipping": 0,
+            "application": null,
+            "application_fee_amount": null,
+            "attempt_count": 0,
+            "attempted": false,
+            "auto_advance": true,
+            "automatic_tax": {
+                "disabled_reason": null,
+                "enabled": true,
+                "liability": {
+                    "type": "self"
+                },
+                "status": "complete"
+            },
+            "automatically_finalizes_at": 1734702900,
+            "billing_reason": "subscription_create",
+            "charge": null,
+            "collection_method": "send_invoice",
+            "created": 1734443699,
+            "currency": "usd",
+            "custom_fields": null,
+            "customer": "cus_RPquKccnplq4rD",
+            "customer_address": {
+                "city": "Geneva",
+                "country": "CH",
+                "line1": "",
+                "line2": "",
+                "postal_code": "1200",
+                "state": ""
+            },
+            "customer_email": "paul.levine@gmail.com",
+            "customer_name": "Paul Levine",
+            "customer_phone": "+410781234567",
+            "customer_shipping": null,
+            "customer_tax_exempt": "none",
+            "customer_tax_ids": [],
+            "default_payment_method": null,
+            "default_source": null,
+            "default_tax_rates": [],
+            "description": null,
+            "discount": null,
+            "discounts": [],
+            "effective_at": null,
+            "ending_balance": null,
+            "footer": null,
+            "from_invoice": null,
+            "hosted_invoice_url": null,
+            "invoice_pdf": null,
+            "issuer": {
+                "type": "self"
+            },
+            "last_finalization_error": null,
+            "latest_revision": null,
+            "lines": {
+                "data": [
+                    {
+                        "id": "il_1QX1ElB6VYcsXDzi8CKXgs",
+                        "object": "line_item",
+                        "amount": 726000,
+                        "currency": "usd",
+                        "description": "some random product",
+                        "discount_amounts": [],
+                        "discountable": true,
+                        "discounts": [],
+                        "invoice": "in_1QX1ElB6VYcsXDpFN7ixiryP",
+                        "livemode": false,
+                        "metadata": {},
+                        "period": {
+                            "end": 1737122098,
+                            "start": 1734443698
+                        },
+                        "pretax_credit_amounts": [],
+                        "proration": false,
+                        "proration_details": {
+                            "credited_items": null
+                        },
+                        "quantity": 1,
+                        "subscription": "sub_1QX1ElB6VYcsXDpFHNwwLKwA",
+                        "subscription_item": "si_RPqw0vJnAhUGBm",
+                        "tax_amounts": [
+                            {
+                                "amount": 0,
+                                "inclusive": false,
+                                "tax_rate": "txr_1PnhHlB6VYcsXDpFhRPARwFV",
+                                "taxability_reason": "not_collecting",
+                                "taxable_amount": 0
+                            }
+                        ],
+                        "tax_rates": [],
+                        "type": "subscription"
+                    },
+                    {
+                        "id": "il_58Qs45FQd85s5q87zCKXss",
+                        "object": "line_item",
+                        "amount": 695200,
+                        "currency": "usd",
+                        "description": "some random product",
+                        "discount_amounts": [],
+                        "discountable": true,
+                        "discounts": [],
+                        "invoice": "in_1QX1ElB6VYcsXDpFN7ixiryP",
+                        "livemode": false,
+                        "metadata": {},
+                        "period": {
+                            "end": 1737122098,
+                            "start": 1734443698
+                        },
+                        "pretax_credit_amounts": [],
+                        "proration": false,
+                        "proration_details": {
+                            "credited_items": null
+                        },
+                        "quantity": 1,
+                        "subscription": "sub_1QX1ElB6VYcsXDpFHNwwLKwA",
+                        "subscription_item": "si_RPqw0vJnAhUGBm",
+                        "tax_amounts": [
+                            {
+                                "amount": 0,
+                                "inclusive": false,
+                                "tax_rate": "txr_1PnhHlB6VYcsXDpFhRPARwFV",
+                                "taxability_reason": "not_collecting",
+                                "taxable_amount": 0
+                            }
+                        ],
+                        "tax_rates": [],
+                        "type": "subscription"
+                    },
+                    {
+                        "id": "il_pokDQElqsFD589Fzi8CsKK",
+                        "object": "line_item",
+                        "amount": 326840,
+                        "currency": "usd",
+                        "description": "some random product",
+                        "discount_amounts": [],
+                        "discountable": true,
+                        "discounts": [],
+                        "invoice": "in_1QX1ElB6VYcsXDpFN7ixiryP",
+                        "livemode": false,
+                        "metadata": {},
+                        "period": {
+                            "end": 1737122098,
+                            "start": 1734443698
+                        },
+                        "pretax_credit_amounts": [],
+                        "proration": false,
+                        "proration_details": {
+                            "credited_items": null
+                        },
+                        "quantity": 1,
+                        "subscription": "sub_1QX1ElB6VYcsXDpFHNwwLKwA",
+                        "subscription_item": "si_RPqw0vJnAhUGBm",
+                        "tax_amounts": [
+                            {
+                                "amount": 0,
+                                "inclusive": false,
+                                "tax_rate": "txr_1PnhHlB6VYcsXDpFhRPARwFV",
+                                "taxability_reason": "not_collecting",
+                                "taxable_amount": 0
+                            }
+                        ],
+                        "tax_rates": [],
+                        "type": "subscription"
+                    }
+                ],
+                "total_count": 3
+            },
+            "livemode": false,
+            "metadata": {},
+            "next_payment_attempt": null,
+            "number": null,
+            "on_behalf_of": null,
+            "paid": false,
+            "paid_out_of_band": false,
+            "payment_intent": null,
+            "payment_settings": {
+                "default_mandate": null,
+                "payment_method_options": null,
+                "payment_method_types": null
+            },
+            "period_end": 1734443698,
+            "period_start": 1734443698,
+            "post_payment_credit_notes_amount": 0,
+            "pre_payment_credit_notes_amount": 0,
+            "quote": null,
+            "receipt_number": null,
+            "rendering": null,
+            "shipping_cost": null,
+            "shipping_details": null,
+            "starting_balance": 0,
+            "statement_descriptor": null,
+            "status": "draft",
+            "status_transitions": {
+                "finalized_at": null,
+                "marked_uncollectible_at": null,
+                "paid_at": null,
+                "voided_at": null
+            },
+            "subscription": "sub_1QX1ElB6VYcsXDpFHNwwLKwA",
+            "subscription_details": {
+                "metadata": {}
+            },
+            "tax": 0,
+            "test_clock": null,
+            "total_discount_amounts": [],
+            "total_pretax_credit_amounts": [],
+            "total_tax_amounts": [
+                {
+                    "amount": 0,
+                    "inclusive": false,
+                    "tax_rate": "txr_1PnhHlB6VYcsXDpFhRPARwFV",
+                    "taxability_reason": "not_collecting",
+                    "taxable_amount": 0
+                }
+            ],
+            "transfer_data": null,
+            "webhooks_delivered_at": null
+        },
+        "livemode": false,
+        "pending_webhooks": 1,
+        "request": {
+            "id": "req_XrNmsz87GgBlJl",
+            "idempotency_key": "80691fae-cfa4-4bb8-9dbb-a8d60272ae67"
+        },
+        "type": "invoice.created"
+    },
+    {
+        "data": {
+            "id": "in_3XY7ApJ7TVkzMDaYL9kzqwrQ",
+            "object": "invoice",
+            "account_country": "FR",
+            "account_name": "Sandbox France",
+            "account_tax_ids": null,
+            "amount_paid": 0,
+            "amount_shipping": 0,
+            "application": null,
+            "application_fee_amount": null,
+            "attempt_count": 0,
+            "attempted": false,
+            "auto_advance": true,
+            "automatic_tax": {
+                "disabled_reason": null,
+                "enabled": true,
+                "liability": {
+                    "type": "self"
+                },
+                "status": "complete"
+            },
+            "automatically_finalizes_at": 1734720000,
+            "billing_reason": "manual",
+            "charge": null,
+            "collection_method": "charge_automatically",
+            "created": 1734500000,
+            "currency": "eur",
+            "custom_fields": null,
+            "customer": "cus_FRy1MkccrtXw8C",
+            "customer_address": {
+                "city": "Paris",
+                "country": "FR",
+                "line1": "12 Rue de la Paix",
+                "line2": "Appartement 34",
+                "postal_code": "75002",
+                "state": "Île-de-France"
+            },
+            "customer_email": "alice.dupont@example.fr",
+            "customer_name": "Alice Dupont",
+            "customer_phone": "+33712345678",
+            "customer_shipping": null,
+            "customer_tax_exempt": "none",
+            "customer_tax_ids": [],
+            "default_payment_method": null,
+            "default_source": null,
+            "default_tax_rates": [],
+            "description": null,
+            "discount": null,
+            "discounts": [],
+            "effective_at": null,
+            "ending_balance": null,
+            "footer": "Merci pour votre commande",
+            "from_invoice": null,
+            "hosted_invoice_url": null,
+            "invoice_pdf": null,
+            "issuer": {
+                "type": "self"
+            },
+            "last_finalization_error": null,
+            "latest_revision": null,
+            "lines": {
+                "data": [
+                    {
+                        "id": "il_Y7A1pxzTf72LW27MlXgCr9P",
+                        "object": "line_item",
+                        "amount": 98000,
+                        "currency": "eur",
+                        "description": "French pastry assortment",
+                        "discount_amounts": [],
+                        "discountable": true,
+                        "discounts": [],
+                        "invoice": "in_3XY7ApJ7TVkzMDaYL9kzqwrQ",
+                        "livemode": false,
+                        "metadata": {},
+                        "period": {
+                            "end": 1737202098,
+                            "start": 1734500000
+                        },
+                        "pretax_credit_amounts": [],
+                        "proration": false,
+                        "proration_details": {
+                            "credited_items": null
+                        },
+                        "quantity": 2,
+                        "subscription": null,
+                        "tax_amounts": [
+                            {
+                                "amount": 19600,
+                                "inclusive": false,
+                                "tax_rate": "txr_3QrFRHlVzkXTJpDFHRfxC5",
+                                "taxability_reason": "taxable",
+                                "taxable_amount": 98000
+                            }
+                        ],
+                        "tax_rates": [],
+                        "type": "manual"
+                    },
+                    {
+                        "id": "il_gkoqdQG27MlXgCr9P",
+                        "object": "line_item",
+                        "amount": 16850,
+                        "currency": "eur",
+                        "description": "French pastry assortment",
+                        "discount_amounts": [],
+                        "discountable": true,
+                        "discounts": [],
+                        "invoice": "in_3XY7ApJ7TVkzMDaYL9kzqwrQ",
+                        "livemode": false,
+                        "metadata": {},
+                        "period": {
+                            "end": 1737202098,
+                            "start": 1734500000
+                        },
+                        "pretax_credit_amounts": [],
+                        "proration": false,
+                        "proration_details": {
+                            "credited_items": null
+                        },
+                        "quantity": 2,
+                        "subscription": null,
+                        "tax_amounts": [
+                            {
+                                "amount": 19600,
+                                "inclusive": false,
+                                "tax_rate": "txr_3QrFRHlVzkXTJpDFHRfxC5",
+                                "taxability_reason": "taxable",
+                                "taxable_amount": 98000
+                            }
+                        ],
+                        "tax_rates": [],
+                        "type": "manual"
+                    }
+                ],
+                "total_count": 2
+            },
+            "livemode": false,
+            "metadata": {},
+            "next_payment_attempt": null,
+            "number": null,
+            "on_behalf_of": null,
+            "paid": false,
+            "paid_out_of_band": false,
+            "payment_intent": null,
+            "payment_settings": {
+                "default_mandate": null,
+                "payment_method_options": null,
+                "payment_method_types": null
+            },
+            "period_end": 1734500000,
+            "period_start": 1734500000,
+            "post_payment_credit_notes_amount": 0,
+            "pre_payment_credit_notes_amount": 0,
+            "quote": null,
+            "receipt_number": null,
+            "rendering": null,
+            "shipping_cost": null,
+            "shipping_details": null,
+            "starting_balance": 0,
+            "statement_descriptor": null,
+            "status": "open",
+            "status_transitions": {
+                "finalized_at": null,
+                "marked_uncollectible_at": null,
+                "paid_at": null,
+                "voided_at": null
+            },
+            "subscription": null,
+            "subscription_details": {
+                "metadata": {}
+            },
+            "tax": 19600,
+            "test_clock": null,
+            "total_discount_amounts": [],
+            "total_pretax_credit_amounts": [],
+            "total_tax_amounts": [
+                {
+                    "amount": 19600,
+                    "inclusive": false,
+                    "tax_rate": "txr_3QrFRHlVzkXTJpDFHRfxC5",
+                    "taxability_reason": "taxable",
+                    "taxable_amount": 98000
+                }
+            ],
+            "transfer_data": null,
+            "webhooks_delivered_at": null
+        },
+        "livemode": false,
+        "pending_webhooks": 1,
+        "request": {
+            "id": "req_FpJyLmzNqBp44K",
+            "idempotency_key": "20691fcb-b8b5-5da8-4bb8-ecfa61273bh3"
+        },
+        "type": "invoice.created"
+    },
+    {
+        "data": {
+            "id": "in_6ZW8RqN9XZmzPAaZG5wrVRkX",
+            "object": "invoice",
+            "account_country": "US",
+            "account_name": "Sandbox USA",
+            "account_tax_ids": null,
+            "amount_paid": 0,
+            "amount_shipping": 0,
+            "application": null,
+            "application_fee_amount": null,
+            "attempt_count": 0,
+            "attempted": false,
+            "auto_advance": true,
+            "automatic_tax": {
+                "disabled_reason": null,
+                "enabled": true,
+                "liability": {
+                    "type": "self"
+                },
+                "status": "complete"
+            },
+            "automatically_finalizes_at": 1734900000,
+            "billing_reason": "one_time",
+            "charge": null,
+            "collection_method": "charge_automatically",
+            "created": 1734600000,
+            "currency": "usd",
+            "custom_fields": null,
+            "customer": "cus_USM82NkssdPP1",
+            "customer_address": {
+                "city": "New York",
+                "country": "US",
+                "line1": "123 Elm Street",
+                "line2": "Apt 5B",
+                "postal_code": "10001",
+                "state": "NY"
+            },
+            "customer_email": "john.doe@example.com",
+            "customer_name": "John Doe",
+            "customer_phone": "+15551234567",
+            "customer_shipping": null,
+            "customer_tax_exempt": "none",
+            "customer_tax_ids": [],
+            "default_payment_method": null,
+            "default_source": null,
+            "default_tax_rates": [],
+            "description": null,
+            "discount": null,
+            "discounts": [],
+            "effective_at": null,
+            "ending_balance": null,
+            "footer": "Thank you for your business!",
+            "from_invoice": null,
+            "hosted_invoice_url": null,
+            "invoice_pdf": null,
+            "issuer": {
+                "type": "self"
+            },
+            "last_finalization_error": null,
+            "latest_revision": null,
+            "lines": {
+                "data": [
+                    {
+                        "id": "il_9ZK7RpQJxz93MW31NpQr73kV",
+                        "object": "line_item",
+                        "amount": 120000,
+                        "currency": "usd",
+                        "description": "Custom software development",
+                        "discount_amounts": [],
+                        "discountable": true,
+                        "discounts": [],
+                        "invoice": "in_6ZW8RqN9XZmzPAaZG5wrVRkX",
+                        "livemode": false,
+                        "metadata": {},
+                        "period": {
+                            "end": 1737203098,
+                            "start": 1734600000
+                        },
+                        "pretax_credit_amounts": [],
+                        "proration": false,
+                        "proration_details": {
+                            "credited_items": null
+                        },
+                        "quantity": 1,
+                        "subscription": null,
+                        "tax_amounts": [
+                            {
+                                "amount": 9600,
+                                "inclusive": false,
+                                "tax_rate": "txr_4UsFRHlNkXTWpJDFRTxZ1X",
+                                "taxability_reason": "taxable",
+                                "taxable_amount": 120000
+                            }
+                        ],
+                        "tax_rates": [],
+                        "type": "manual"
+                    },
+                    {
+                        "id": "il_3RK8MpNTwX1K52LmNpVr39ZR",
+                        "object": "line_item",
+                        "amount": 50000,
+                        "currency": "usd",
+                        "description": "Monthly maintenance fee",
+                        "discount_amounts": [],
+                        "discountable": true,
+                        "discounts": [],
+                        "invoice": "in_6ZW8RqN9XZmzPAaZG5wrVRkX",
+                        "livemode": false,
+                        "metadata": {},
+                        "period": {
+                            "end": 1737203098,
+                            "start": 1734600000
+                        },
+                        "pretax_credit_amounts": [],
+                        "proration": false,
+                        "proration_details": {
+                            "credited_items": null
+                        },
+                        "quantity": 1,
+                        "subscription": null,
+                        "tax_amounts": [
+                            {
+                                "amount": 4000,
+                                "inclusive": false,
+                                "tax_rate": "txr_4UsFRHlNkXTWpJDFRTxZ1X",
+                                "taxability_reason": "taxable",
+                                "taxable_amount": 50000
+                            }
+                        ],
+                        "tax_rates": [],
+                        "type": "manual"
+                    }
+                ],
+                "total_count": 2
+            },
+            "livemode": false,
+            "metadata": {},
+            "next_payment_attempt": null,
+            "number": null,
+            "on_behalf_of": null,
+            "paid": false,
+            "paid_out_of_band": false,
+            "payment_intent": null,
+            "payment_settings": {
+                "default_mandate": null,
+                "payment_method_options": null,
+                "payment_method_types": null
+            },
+            "period_end": 1734600000,
+            "period_start": 1734600000,
+            "post_payment_credit_notes_amount": 0,
+            "pre_payment_credit_notes_amount": 0,
+            "quote": null,
+            "receipt_number": null,
+            "rendering": null,
+            "shipping_cost": null,
+            "shipping_details": null,
+            "starting_balance": 0,
+            "statement_descriptor": null,
+            "status": "open",
+            "status_transitions": {
+                "finalized_at": null,
+                "marked_uncollectible_at": null,
+                "paid_at": null,
+                "voided_at": null
+            },
+            "subscription": null,
+            "subscription_details": {
+                "metadata": {}
+            },
+            "tax": 13600,
+            "test_clock": null,
+            "total_discount_amounts": [],
+            "total_pretax_credit_amounts": [],
+            "total_tax_amounts": [
+                {
+                    "amount": 13600,
+                    "inclusive": false,
+                    "tax_rate": "txr_4UsFRHlNkXTWpJDFRTxZ1X",
+                    "taxability_reason": "taxable",
+                    "taxable_amount": 170000
+                }
+            ],
+            "transfer_data": null,
+            "webhooks_delivered_at": null
+        },
+        "livemode": false,
+        "pending_webhooks": 1,
+        "request": {
+            "id": "req_VJX8KmLNjXgX6X",
+            "idempotency_key": "30991fcc-c7c5-7da9-5bb9-fefa85283cj9"
+        },
+        "type": "invoice.created"
+    }
+]

@@ -1,4 +1,0 @@
-%dw 2.0
-
-type auto_2e243199_9781_4442_b936_016207fabf80_Output_Variables_customerId = Number | String
-

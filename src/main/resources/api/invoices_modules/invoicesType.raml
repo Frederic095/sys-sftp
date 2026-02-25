@@ -1,0 +1,22 @@
+#%RAML 1.0 DataType
+
+type: object
+properties: 
+  id: string
+  total : number
+  currency: string
+  date: datetime
+  customer:
+    type: object
+    properties: 
+      id : string
+      city: string
+      country: string
+      postalCode: string
+      email: string
+      name: string
+      phone: string
+  lineItems:
+    type: array
+    items: !include lineItem.raml
+  
