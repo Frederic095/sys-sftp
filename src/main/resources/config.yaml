@@ -1,0 +1,10 @@
+http:
+ port: "8081"
+
+db:
+  host: "sql.bylinkr.com"
+  port: "5436"
+  user: "training"
+  password: "training2023$"
+  database: "training-mdbp"
+  table: "order_items"

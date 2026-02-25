@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:batch="http://www.mulesoft.org/schema/mule/batch" xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd
+http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd">
+	<flow name="getCommands" doc:id="08e4b5f0-94f1-460d-aff7-a2f05276e5a4" >
+		<flow-ref doc:name="getQueryParams" doc:id="36b420fc-7966-4174-b567-c10eacc71d1a" name="getQueryParams"/>
+		<db:select doc:name="Select all commands" doc:id="85ebd35c-cbe2-44a2-b738-280ee8ad6a8a" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT * FROM order_items
+]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="filter, sort , orderBy &amp; map data" doc:id="dc63ce1c-7031-41a0-beba-6442ad62ee8f" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+
+var customerId = vars.customerId
+var productName = vars.productName
+var DataOrderBy = vars.orderBy
+
+var filteredData = 
+	payload 
+	  filter ((item) -> 
+	    (isEmpty(customerId)  or customerId == item.customer_id) and
+	    (isEmpty(productName)  or productName == item.product_name)
+	  )
+---
+(
+    if (DataOrderBy == "price")
+        filteredData orderBy $.price
+    else if (DataOrderBy == "quantity")
+        filteredData orderBy $.quantity
+    else
+        filteredData
+)
+
+
+  map ((data, index) -> {
+    ID: data.orderreference,
+    customerId: data.customer_id,
+    product: {
+      name: data.product_name replace /'/ with(" pouces"),
+      price: data.price,
+      quantity: data.quantity
+    }
+  })]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="ee693551-b8d7-4a21-bc11-7fe6056667d6" />
+	</flow>
+	<flow name="getQueryParams" doc:id="2e243199-9781-4442-b936-016207fabf80">
+		<set-variable value='#[message.attributes.queryParams.customerId default ""]' doc:name="customerId" doc:id="799761a9-d04f-4647-8788-38a67a340a1b" variableName="customerId" />
+		<set-variable value='#[message.attributes.queryParams.productName default ""]' doc:name="productName" doc:id="1bd56a66-8e54-4821-a1da-f16d3ed798f8" variableName="productName" />
+		<set-variable value='#[message.attributes.queryParams.orderBy default ""]' doc:name="orderBy" doc:id="c0ab2de3-b72f-4077-acf4-93e7e6e4f896" variableName="orderBy" />
+	</flow>
+	<flow name="getCommandsByID" doc:id="2adb134f-35e2-40ec-a76c-bfffc61a5758" initialState="stopped">
+		<flow-ref doc:name="setCommandID" doc:id="73e436d5-cd49-4efd-860b-a8863a5062cc" name="setCommandID"/>
+		<db:select doc:name="Select command by ID" doc:id="1c6a34f2-1838-42ab-908c-9f75f0296b21" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT * FROM order_items 
+WHERE orderreference = :commandID]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	"commandID": vars.commandID
+}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="f4adadba-be5e-45b7-ac3d-1db87382c415">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload 
+
+map ( item , indexOfPayload01 ) -> {
+    ID: item.orderreference,
+    customerId: item.customer_id default "",
+    product:{
+    	name: item.product_name replace /'/ with(" pouces"),
+	    price: item.price default 0,
+	    quantity: item.quantity default 0
+    }
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger1" doc:id="7a36703a-3e72-4a25-942f-7f0034e80c4d" />
+	</flow>
+	<flow name="setCommandID" doc:id="d30da90b-475d-4474-9d25-dd790600f4dd">
+		<set-variable value="#[attributes.uriParams.ID]" doc:name="commandID" doc:id="0c0fed5f-b655-4b78-bac7-c8c2d88cd47c" variableName="commandID" />
+	</flow>
+	<flow name="implementationFlow" doc:id="b34b62a4-387b-45df-a25d-c50d3c586d24" initialState="stopped">
+		<scheduler doc:name="Scheduler" doc:id="8f6a7003-840e-4696-8d12-f4796489c18f" >
+			<scheduling-strategy >
+				<fixed-frequency />
+			</scheduling-strategy>
+		</scheduler>
+		<set-payload value="#[['a','b','c','d','e']]" doc:name="['a','b','c','d','e']" doc:id="d0a1e265-94a4-4464-93c1-d1e79d22be6f" />
+		<batch:job jobName="implementationBatch_Job" doc:id="76052604-ca3d-4aea-843b-81a863b19b9a" >
+			<batch:process-records >
+				<batch:step name="Batch_Step" doc:id="4c006a18-8e27-4e8c-ba97-f9948baaff9c" acceptExpression='#[not (payload contains "b")]'>
+					<ee:transform doc:name="Upper (payload)" doc:id="a0147d60-66ac-4a4d-8793-3ad0e39d335e" >
+						<ee:message >
+							<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+}]]></ee:set-payload>
+						</ee:message>
+					</ee:transform>
+					<batch:aggregator doc:name="Batch Aggregator_by_3" doc:id="3ef57f41-ed82-4004-b6cf-9bdc662fc5bb" size="3" >
+						<logger level="INFO" doc:name="Logger" doc:id="687bb5d6-0963-453e-96df-74661f6316b0" message="#[output application/json ---payload]"/>
+					</batch:aggregator>
+				</batch:step>
+			</batch:process-records>
+		</batch:job>
+	</flow>
+</mule>
