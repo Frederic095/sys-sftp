@@ -135,6 +135,7 @@ output application/json
     </flow>
     <flow name="delete:\products\(id):sys-sftp-config">
 		<set-variable value='#[attributes.uriParams.id]' doc:name="[productId]" doc:id="5fde4170-7989-462c-9382-8a5fa913dfcb" variableName="productId"/>
+		<set-variable value='#[message.attributes.queryParams.qty default null]' doc:name="[quantity]" doc:id="d44857c2-8049-4c06-a93c-8819ec895f83" variableName="quantity" />
 		<flow-ref doc:name="sub-product-delete" doc:id="102eac9e-b66e-4d32-ad14-e74ad5c8ece9" name="sub-product-delete"/>
     </flow>
 </mule>

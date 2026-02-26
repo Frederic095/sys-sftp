@@ -293,24 +293,55 @@ var item = vars.product
 	<flow name="sub-product-delete" doc:id="d1b795d6-8dc7-479e-93fa-64c50e34f829" >
 		<logger level="INFO" doc:name="Start" doc:id="54853e52-1d6c-4b78-9eb2-9ca52c4a4024" message='#[{&#10;	"step" :"Start deleteProduct flow",&#10;	"data" : {&#10;		"business" :{&#10;			&#10;		},&#10;		"technical":{&#10;			"payload" : vars.productId&#10;		}&#10;	}&#10;}]' />
 		<sftp:read doc:name="Read" doc:id="d0765d79-c66a-4f20-9523-0eeeb13c5291" config-ref="SFTP_Config" path="${sftp.fn}" />
-		<set-variable value="#[output json&#10;&#10;&#10; var filtered = payload filter ($.id != vars.productId)&#10; &#10;---&#10;&#10;filtered]" doc:name="[filteredProducts]" doc:id="0bedffa2-5671-4e4d-b2cd-1b03d5852a18" variableName="filteredProducts" />
-		<set-variable value="#[output json&#10;&#10;&#10; var exists = payload filter ($.id == vars.productId)&#10;&#10;&#10;---&#10;exists]" doc:name="[varExists]" doc:id="247785c9-3cdd-4fed-990a-b3814a7e78b0" variableName="varExists" />
-		<logger level="INFO" doc:name="End1" doc:id="0ce3f91a-e0df-4fea-8084-e6f750650fd1" message='#[{&#10;	"step" :"End deleteProduct flow",&#10;	"data" : {&#10;		"business" :{&#10;			&#10;		},&#10;		"technical":{&#10;			"payload" : vars.varExists&#10;		}&#10;	}&#10;}]' />
+		<set-variable value="#[output json&#10;&#10;&#10; var exists = payload filter ($.id == vars.productId)&#10; &#10;---&#10;exists]" doc:name="[varExists]" doc:id="247785c9-3cdd-4fed-990a-b3814a7e78b0" variableName="varExists" />
 		<validation:is-not-empty-collection doc:name="Is not empty collection" doc:id="d183fe3c-5b28-4268-8910-7bcf0c336e47" values="#[vars.varExists]"/>
-		<ee:transform doc:name="Transform Message" doc:id="f330f015-b05e-4fd4-a4ee-7035e3c46d2d">
-			<ee:message>
-				<ee:set-payload><![CDATA[%dw 2.0
-output application/csv header=true
+		<choice doc:name="Choice" doc:id="4d46ed98-af88-4474-b04f-622334ebe420" >
+			<when expression="#[vars.quantity != null]">
+				<ee:transform doc:name="Transform Message" doc:id="b3d25964-7de5-479f-addf-2296f7a57a3a" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[output csv header = true
+
+var productId = vars.productId
+var quantity = vars.quantity
+
+fun stockFunction(stock, id) =
+	if(id == productId) (stock as Number) - (quantity as Number)
+	else stock
+ 
+ 
+ var data = payload map(item, index) -> {
+	
+	id: item.id,
+	name: item.name,
+	category : item.category,
+	price : item.price,
+	stock : stockFunction(item.stock, item.id)
+}
 
 ---
 
-vars.filteredProducts]]></ee:set-payload>
+data filter $.stock > 0]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<otherwise >
+				<ee:transform doc:name="Transform Message" doc:id="f330f015-b05e-4fd4-a4ee-7035e3c46d2d">
+			<ee:message>
+				<ee:set-payload><![CDATA[output csv header = true
+
+
+ var filteredProducts = payload filter ($.id != vars.productId)
+ 
+---
+
+filteredProducts]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<sftp:write doc:name="Write" doc:id="b6938a25-8429-4705-8faa-ab49ed2be23b" config-ref="SFTP_Config" path="${sftp.fn}">
-		</sftp:write>
-		<set-payload value='#[output json&#10;---&#10;message: "The product has been deleted successfully"]' doc:name="Set Payload" doc:id="0dbd73b9-b38f-495d-9388-4f1b3f57903e" />
-		<logger level="INFO" doc:name="End" doc:id="d82bcc29-8074-4667-8568-98f1a426fcdf" message='#[{&#10;	"step" :"End deleteProduct flow",&#10;	"data" : {&#10;		"business" :{&#10;			&#10;		},&#10;		"technical":{&#10;			"payload" : vars.filteredProducts&#10;		}&#10;	}&#10;}]' />
+			</otherwise>
+		</choice>
+		<sftp:write doc:name="Write" doc:id="fe478525-f480-4f6b-8df5-f3227075c1c8" config-ref="SFTP_Config" path="${sftp.fn}"/>
+		<set-payload value='#[output json&#10;---&#10;message: "The changes has been aplied successfully"]' doc:name="Set Payload" doc:id="26b311d0-2008-4ecc-9902-02c95fad4d53" />
+		<logger level="INFO" doc:name="End" doc:id="d82bcc29-8074-4667-8568-98f1a426fcdf" message='#[{&#10;	"step" :"End deleteProduct flow",&#10;	"data" : {&#10;		"business" :{&#10;			&#10;		},&#10;		"technical":{&#10;			"payload" : payload&#10;		}&#10;	}&#10;}]' />
 		<error-handler >
 			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="d88805e0-8fdb-4f98-bfdf-0915a5183e5f" type="VALIDATION:EMPTY_COLLECTION" >
 				<set-payload value='#[output json&#10;---&#10;message: "Product not found"]' doc:name="Product Not Found" doc:id="87beae0f-a58a-45be-a23d-b5427050c66f" mimeType="application/json" />
