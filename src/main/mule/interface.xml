@@ -134,24 +134,7 @@ output application/json
         </ee:transform>
     </flow>
     <flow name="delete:\products\(id):sys-sftp-config">
-        <ee:transform doc:name="Transform Message">
-            <ee:variables>
-                <ee:set-variable variableName="id">attributes.uriParams.'id'</ee:set-variable>
-            </ee:variables>
-        </ee:transform>
-        <ee:transform doc:name="Transform Message">
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-  correlationId: "fe5zef1-194b-475c-8dee-0zef56zf4180",
-  statusCode: 404,
-  namespace: "RESOURCE_NAME",
-  identifier: "NOT_FOUND",
-  description: "product not found with id xxx"
-} as Object {encoding: "UTF-8", mediaType: "application/json"}]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
+		<set-variable value='#[attributes.uriParams.id]' doc:name="[productId]" doc:id="5fde4170-7989-462c-9382-8a5fa913dfcb" variableName="productId"/>
+		<flow-ref doc:name="sub-product-delete" doc:id="102eac9e-b66e-4d32-ad14-e74ad5c8ece9" name="sub-product-delete"/>
     </flow>
 </mule>
