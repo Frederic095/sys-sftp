@@ -210,6 +210,7 @@ payload map (item)-> do{
 		<logger level="INFO" doc:name="Logger" doc:id="c4f07000-c475-4e16-be85-25ed09f98f7e" message="#[payload]"/>
 	</flow>
 	<flow name="sub-product-getAll" doc:id="0dc22d9e-ad4d-453f-b6aa-71941c1fbb78" >
+		<logger level="INFO" doc:name="Start" doc:id="48b18779-2dea-490f-a89d-3648ebce2c25" message='#[{&#10;	"step" :"Start getAll product flow",&#10;	"data" : {&#10;		"business" :{&#10;			&#10;		},&#10;		"technical":{&#10;			"payload" : vars.category&#10;		}&#10;	}&#10;}]' />
 		<sftp:read doc:name="Read" doc:id="ed173b56-38f9-4188-bc21-5f78948d8b61" config-ref="SFTP_Config" path="${sftp.fn}" />
 		<ee:transform doc:name="Transform Message" doc:id="5159a964-060a-47f9-9c61-1d1eb44e5ac9" >
 			<ee:message >
@@ -229,12 +230,64 @@ var filteredByCategory =
 
 ---
 
-filteredByCategory
+filteredByCategory map(item) -> {
+	  "id": item.id as Number,
+        "name": item.name as String,
+        "category": item.category as String,
+        "price": item.price as Number,
+        "stock": item.stock as Number
+}
 
 
 ]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<logger level="INFO" doc:name="Logger" doc:id="7e4af220-9a84-494d-bfd4-aa07d285f19e" message="#[payload]"/>
+		<logger level="INFO" doc:name="End" doc:id="7e4af220-9a84-494d-bfd4-aa07d285f19e" message='#[{&#10;	"step" :"End getAll product flow",&#10;	"data" : {&#10;		"business" :{&#10;			&#10;		},&#10;		"technical":{&#10;			"payload" : payload&#10;		}&#10;	}&#10;}]'/>
+	</flow>
+	<flow name="sub-product-create" doc:id="41526f15-c1ad-4885-80f0-0aef1df2da92" >
+		<logger level="INFO" doc:name="Start" doc:id="3f4e1dbe-a659-434c-ace8-1111b0244c70" message='#[{&#10;	"step" :"Start createProduct flow",&#10;	"data" : {&#10;		"business" :{&#10;			&#10;		},&#10;		"technical":{&#10;			"payload" : vars.product&#10;		}&#10;	}&#10;}]' />
+		<sftp:read doc:name="Read" doc:id="a87b5b0c-cf3f-470f-9c34-aa8910b43c7f" config-ref="SFTP_Config" path="${sftp.fn}" />
+		<set-variable value="#[output json&#10;&#10;var productAdded = vars.product&#10;&#10;var filteredById =&#10;        payload filter (&#10;            $.id == (productAdded.id) as String&#10;        )&#10;&#10;---&#10;&#10;filteredById]" doc:name="[searchId]" doc:id="c2ada3d6-e791-4b8e-bfd0-53c2b19ee90d" variableName="searchId"/>
+		<logger level="INFO" doc:name="MID" doc:id="1585a2a9-a08a-4ae0-9260-c9ad3cbbac21" message='#[{&#10;	"step" :"Mid createProduct flow",&#10;	"data" : {&#10;		"business" :{&#10;			&#10;		},&#10;		"technical":{&#10;			"payload" : vars.search&#10;		}&#10;	}&#10;}]' />
+		<validation:is-empty-collection doc:name="Is empty collection" doc:id="4c5463b9-2a60-4358-ae97-9464f57845b5" values="#[vars.searchId]">
+		</validation:is-empty-collection>
+		<logger level="INFO" doc:name="Mid2" doc:id="01bbc40d-48cf-434b-94cb-04ca6facf523" message='#[{&#10;	"step" :"Mid2 createProduct flow",&#10;	"data" : {&#10;		"business" :{&#10;			&#10;		},&#10;		"technical":{&#10;			"payload" : payload&#10;		}&#10;	}&#10;}]' />
+		<ee:transform doc:name="Transform Message" doc:id="fa670f39-2f68-413e-b9bc-c3b68294323f" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output csv header = false
+
+var item = vars.product
+---
+{
+  id: item.id as Number,
+  name: item.name as String,
+  category: item.category as String,
+  price:item.price as Number,
+  stock: item.stock as Number
+}
+
+/*vars.product update {
+	case .id : $.id as Number
+	case .name : $.name as String
+    case .category : $.category as String
+    case .price : $.price as Number
+    case .stock: $.stock as Number
+}*/
+
+
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="StartWrite" doc:id="68f5ec1b-b1fe-482d-95d6-bf72603fed80" message='#[{&#10;	"step" :"StartWrite createProduct flow",&#10;	"data" : {&#10;		"business" :{&#10;			&#10;		},&#10;		"technical":{&#10;			"payload" : payload&#10;		}&#10;	}&#10;}]' />
+		<sftp:write doc:name="Write" doc:id="7b390136-40c7-4856-8b3e-f8841d65913c" config-ref="SFTP_Config" path="${sftp.fn}" mode="APPEND"/>
+		<set-payload value='#[output json&#10;---&#10;message: "The product has been created successfully"]' doc:name="Set Payload" doc:id="a738f3b1-9e61-4b7d-a53e-d3a8d87c16ab" />
+		<logger level="INFO" doc:name="End" doc:id="5c2002ad-ef22-461f-84ed-f428477f05b2" message='#[{&#10;	"step" :"End createProduct flow",&#10;	"data" : {&#10;		"business" :{&#10;			&#10;		},&#10;		"technical":{&#10;			"payload" : payload&#10;		}&#10;	}&#10;}]' />
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="2ea84328-9dab-43b9-b43d-922dcdf63d48" type="VALIDATION:NOT_EMPTY_COLLECTION" >
+				<set-payload value='#[output json&#10;---&#10;message: "The ID already exist."]' doc:name="Product Not Acceptable" doc:id="80735c99-85de-4e64-a250-a4e0b32dc4b0" mimeType="application/json" />
+				<set-variable value="406" doc:name="[httpStatus]" doc:id="c32c072e-0f86-4679-8d58-2f127caaeab8" variableName="httpStatus" mimeType="application/json" />
+			</on-error-propagate>
+		</error-handler>
 	</flow>
 </mule>
