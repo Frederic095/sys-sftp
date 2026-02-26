@@ -113,25 +113,8 @@ output application/json
         <flow-ref doc:name="sub-product-create" doc:id="9ae39a40-bafd-4de1-8910-4e6af71b487e" name="sub-product-create" />
     </flow>
     <flow name="post:\products\(id):sys-sftp-config">
-        <ee:transform doc:name="Transform Message">
-            <ee:variables>
-                <ee:set-variable variableName="id">attributes.uriParams.'id'</ee:set-variable>
-            </ee:variables>
-        </ee:transform>
-        <ee:transform doc:name="Transform Message">
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-  correlationId: "fe5zef1-194b-475c-8dee-0zef56zf4180",
-  statusCode: 404,
-  namespace: "RESOURCE_NAME",
-  identifier: "NOT_FOUND",
-  description: "product not found with id xxx"
-} as Object {encoding: "UTF-8", mediaType: "application/json"}]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
+        <set-variable value="#[attributes.uriParams.id]" doc:name="[productId]" doc:id="967871c1-5073-4277-8b47-1287fa3be1fd" variableName="productId" />
+		<flow-ref doc:name="sub-product-add-stock" doc:id="67965ad3-ee2d-4ba4-94d8-cf65efb9b82a" name="sub-product-add-stock" />
     </flow>
     <flow name="delete:\products\(id):sys-sftp-config">
 		<set-variable value='#[attributes.uriParams.id]' doc:name="[productId]" doc:id="5fde4170-7989-462c-9382-8a5fa913dfcb" variableName="productId"/>
