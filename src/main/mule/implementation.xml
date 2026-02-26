@@ -339,6 +339,8 @@ filteredProducts]]></ee:set-payload>
 		</ee:transform>
 			</otherwise>
 		</choice>
+		<sftp:write doc:name="Write" doc:id="fe478525-f480-4f6b-8df5-f3227075c1c8" config-ref="SFTP_Config" path="${sftp.fn}"/>
+		<set-payload value='#[output json&#10;---&#10;message: "The changes has been aplied successfully"]' doc:name="Set Payload" doc:id="26b311d0-2008-4ecc-9902-02c95fad4d53" />
 		<logger level="INFO" doc:name="End" doc:id="d82bcc29-8074-4667-8568-98f1a426fcdf" message='#[{&#10;	"step" :"End deleteProduct flow",&#10;	"data" : {&#10;		"business" :{&#10;			&#10;		},&#10;		"technical":{&#10;			"payload" : payload&#10;		}&#10;	}&#10;}]' />
 		<error-handler >
 			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="d88805e0-8fdb-4f98-bfdf-0915a5183e5f" type="VALIDATION:EMPTY_COLLECTION" >
