@@ -3,7 +3,7 @@
     <http:listener-config name="sys-sftp-httpListenerConfig">
         <http:listener-connection host="0.0.0.0" port="8081" />
     </http:listener-config>
-    <apikit:config name="sys-sftp-config" api="resource::b2f6554e-0c52-496f-bf8d-085c9f4ad625:raml_tp2:1.0.4:raml:zip:sys-sftp.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <apikit:config name="sys-sftp-config" api="resource::b2f6554e-0c52-496f-bf8d-085c9f4ad625:raml_tp2:1.0.5:raml:zip:sys-sftp.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
     <flow name="sys-sftp-main">
         <http:listener config-ref="sys-sftp-httpListenerConfig" path="/api/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
@@ -109,8 +109,8 @@ output application/json
         <flow-ref doc:name="sub-product-getAll" doc:id="6da9ce62-0b97-4508-aed4-5ba76d306748" name="sub-product-getAll" />
     </flow>
     <flow name="post:\products:application\json:sys-sftp-config">
-		<set-variable value='#[payload]' doc:name="[product]" doc:id="bcefad3f-b1fd-4ebb-81ec-96d293a85df6" variableName="product" />
-		<flow-ref doc:name="sub-product-create" doc:id="9ae39a40-bafd-4de1-8910-4e6af71b487e" name="sub-product-create"/>
+        <set-variable value="#[payload]" doc:name="[product]" doc:id="bcefad3f-b1fd-4ebb-81ec-96d293a85df6" variableName="product" />
+        <flow-ref doc:name="sub-product-create" doc:id="9ae39a40-bafd-4de1-8910-4e6af71b487e" name="sub-product-create" />
     </flow>
     <flow name="post:\products\(id):sys-sftp-config">
         <ee:transform doc:name="Transform Message">
