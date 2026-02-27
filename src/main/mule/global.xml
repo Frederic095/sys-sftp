@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:sftp="http://www.mulesoft.org/schema/mule/sftp" xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-http://www.mulesoft.org/schema/mule/sftp http://www.mulesoft.org/schema/mule/sftp/current/mule-sftp.xsd">
+<mule xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties" xmlns:sftp="http://www.mulesoft.org/schema/mule/sftp"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/sftp http://www.mulesoft.org/schema/mule/sftp/current/mule-sftp.xsd
+http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd">
 	
 	<sftp:config name="SFTP_Config" doc:name="SFTP Config" doc:id="86f9c6cf-7b79-486a-8142-26311a3a28e5" >
 		<sftp:connection workingDir="${sftp.wd}" host="${sftp.host}" port="${sftp.port}" username="${sftp.user}" password="${sftp.password}" />
 	</sftp:config>
-	<configuration-properties doc:name="Configuration properties" doc:id="cd33bbfd-8e56-4fb3-ac79-c0036787be52" file="${mule.env}-properties.yaml" />
+	<configuration-properties doc:name="Configuration properties" doc:id="cd33bbfd-8e56-4fb3-ac79-c0036787be52" file="properties/${mule.env}-properties.yaml" />
+	<secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="2b7ccc7e-e262-4740-8991-eed9f995aa55" file="properties/${mule.env}-secure-properties.yaml" key="${mule.encryptionKey}" />
+	
 </mule>

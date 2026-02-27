@@ -98,27 +98,27 @@ output application/json
     </flow>
     <flow name="get:\invoices:sys-sftp-config">
         <set-variable value="#[message.attributes.queryParams.currency default &quot;&quot;]" doc:name="[currency]" doc:id="266ecb86-950f-4a50-830f-4899bcbc6c4a" variableName="currency" />
-        <flow-ref doc:name="sub-invoice-getAll" doc:id="c3d90c6d-f36a-4f56-ba8a-e8fac4f737a8" name="sub-invoices-getAll" />
+        <flow-ref doc:name="impl-invoice-getAll" doc:id="c3d90c6d-f36a-4f56-ba8a-e8fac4f737a8" name="impl-invoices-getAll" />
     </flow>
     <flow name="get:\invoices\(id):sys-sftp-config">
         <set-variable value="#[attributes.uriParams.id]" doc:name="[invoiceId]" doc:id="2092b107-163a-44b0-b2a7-1e8021572a46" variableName="invoiceId" />
-        <flow-ref doc:name="sub-invoice-getById" doc:id="28909efd-482d-480c-8dc0-0194c224af0d" name="sub-invoice-getById" />
+        <flow-ref doc:name="sub-invoice-getById" doc:id="28909efd-482d-480c-8dc0-0194c224af0d" name="impl-invoice-getById" />
     </flow>
     <flow name="get:\products:sys-sftp-config">
-        <set-variable value="#[message.attributes.queryParams.category default &quot;&quot;]" doc:name="[category]" doc:id="fd8eb408-048d-4148-ae4a-4f0f936c2184" variableName="category" />
-        <flow-ref doc:name="sub-product-getAll" doc:id="6da9ce62-0b97-4508-aed4-5ba76d306748" name="sub-product-getAll" />
+        <set-variable value="#[message.attributes.queryParams.category default null]" doc:name="[category]" doc:id="fd8eb408-048d-4148-ae4a-4f0f936c2184" variableName="category" />
+        <flow-ref doc:name="impl-product-getAll" doc:id="6da9ce62-0b97-4508-aed4-5ba76d306748" name="impl-product-getAll" />
     </flow>
     <flow name="post:\products:application\json:sys-sftp-config">
         <set-variable value="#[payload]" doc:name="[product]" doc:id="bcefad3f-b1fd-4ebb-81ec-96d293a85df6" variableName="product" />
-        <flow-ref doc:name="sub-product-create" doc:id="9ae39a40-bafd-4de1-8910-4e6af71b487e" name="sub-product-create" />
+        <flow-ref doc:name="impl-product-create" doc:id="9ae39a40-bafd-4de1-8910-4e6af71b487e" name="impl-product-create" />
     </flow>
     <flow name="post:\products\(id):sys-sftp-config">
         <set-variable value="#[attributes.uriParams.id]" doc:name="[productId]" doc:id="967871c1-5073-4277-8b47-1287fa3be1fd" variableName="productId" />
-		<flow-ref doc:name="sub-product-add-stock" doc:id="67965ad3-ee2d-4ba4-94d8-cf65efb9b82a" name="sub-product-add-stock" />
+		<flow-ref doc:name="impl-product-add-stock" doc:id="67965ad3-ee2d-4ba4-94d8-cf65efb9b82a" name="impl-product-add-stock" />
     </flow>
     <flow name="delete:\products\(id):sys-sftp-config">
 		<set-variable value='#[attributes.uriParams.id]' doc:name="[productId]" doc:id="5fde4170-7989-462c-9382-8a5fa913dfcb" variableName="productId"/>
 		<set-variable value='#[message.attributes.queryParams.qty default null]' doc:name="[quantity]" doc:id="d44857c2-8049-4c06-a93c-8819ec895f83" variableName="quantity" />
-		<flow-ref doc:name="sub-product-delete" doc:id="102eac9e-b66e-4d32-ad14-e74ad5c8ece9" name="sub-product-delete"/>
+		<flow-ref doc:name="impl-product-delete" doc:id="102eac9e-b66e-4d32-ad14-e74ad5c8ece9" name="impl-product-delete"/>
     </flow>
 </mule>

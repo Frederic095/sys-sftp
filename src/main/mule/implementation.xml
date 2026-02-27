@@ -6,7 +6,7 @@
 http://www.mulesoft.org/schema/mule/sftp http://www.mulesoft.org/schema/mule/sftp/current/mule-sftp.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
 http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
-	<flow name="sub-invoices-getAll" doc:id="5ddd7b31-f2a9-446e-8a81-d0dc46f281af" >
+	<flow name="impl-invoices-getAll" doc:id="5ddd7b31-f2a9-446e-8a81-d0dc46f281af" >
 		<sftp:read doc:name="Read" doc:id="dbfcb1e2-9400-4225-b956-70a97322bd0d" config-ref="SFTP_Config" path="invoices.json"/>
 		<ee:transform doc:name="Transform Message" doc:id="54e45901-53c5-437d-8239-316768db3a77" >
 			<ee:message >
@@ -62,7 +62,7 @@ filteredByCurrency map(
 		</ee:transform>
 		<logger level="INFO" doc:name="Logger" doc:id="2b6a8279-f776-49da-b736-16659f51b432" />
 	</flow>
-	<flow name="sub-invoice-getById" doc:id="ab0ddc4d-c12c-4e14-82cd-d3521100aa17" >
+	<flow name="impl-invoice-getById" doc:id="ab0ddc4d-c12c-4e14-82cd-d3521100aa17" >
 		<sftp:read doc:name="Read" doc:id="03f7eefc-973d-4782-bf63-61332bcf5410" config-ref="SFTP_Config" path="invoices.json"/>
 		<ee:transform doc:name="Transform Message" doc:id="4bf283ac-be28-4ab4-a67a-0dc69180366e" >
 			<ee:message >
@@ -209,9 +209,10 @@ payload map (item)-> do{
 		<sftp:read doc:name="Read file created" doc:id="dd3857bc-f2c0-467a-a796-0596dfec1513" config-ref="SFTP_Config" path="/upload/theu/Frederic/Absences.csv"/>
 		<logger level="INFO" doc:name="Logger" doc:id="c4f07000-c475-4e16-be85-25ed09f98f7e" message="#[payload]"/>
 	</flow>
-	<flow name="sub-product-getAll" doc:id="0dc22d9e-ad4d-453f-b6aa-71941c1fbb78" >
-		<logger level="INFO" doc:name="Start" doc:id="48b18779-2dea-490f-a89d-3648ebce2c25" message='#[{&#10;	"step" :"Start getAll product flow",&#10;	"data" : {&#10;		"business" :{&#10;			&#10;		},&#10;		"technical":{&#10;			"payload" : vars.category&#10;		}&#10;	}&#10;}]' />
-		<flow-ref doc:name="callSftpProducts" doc:id="9e3a059a-1795-4820-af76-dd81f7e6c197" name="callSftpProducts" />
+	<flow name="impl-product-getAll" doc:id="0dc22d9e-ad4d-453f-b6aa-71941c1fbb78" >
+		<logger level="DEBUG" doc:name="Start" doc:id="48b18779-2dea-490f-a89d-3648ebce2c25" message='#[{&#10;	"step" :"Start getAll product flow",&#10;	"data" : {&#10;		"business" :{&#10;			"category" : vars.category&#10;			&#10;		},&#10;		"technical":{&#10;			"payload" : ""&#10;		}&#10;	}&#10;}]' />
+		<flow-ref doc:name="sub-product-callSftp" doc:id="9e3a059a-1795-4820-af76-dd81f7e6c197" name="sub-product-callSftp" />
+		<logger level="DEBUG" doc:name="After Read SFTP Request" doc:id="edc0286f-be32-4a65-b83e-1bd0b901047c" message='#[{&#10;	"step" :"After Read SFTP Request product flow",&#10;	"data" : {&#10;		"business" :{&#10;			"category" : vars.category&#10;			&#10;		},&#10;		"technical":{&#10;			"payload" : payload&#10;		}&#10;	}&#10;}]' />
 		<ee:transform doc:name="Transform Message" doc:id="5159a964-060a-47f9-9c61-1d1eb44e5ac9" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
@@ -242,16 +243,16 @@ filteredByCategory map(item) -> {
 ]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<logger level="INFO" doc:name="End" doc:id="7e4af220-9a84-494d-bfd4-aa07d285f19e" message='#[{&#10;	"step" :"End getAll product flow",&#10;	"data" : {&#10;		"business" :{&#10;			&#10;		},&#10;		"technical":{&#10;			"payload" : payload&#10;		}&#10;	}&#10;}]'/>
+		<logger level="DEBUG" doc:name="End" doc:id="7e4af220-9a84-494d-bfd4-aa07d285f19e" message='#[{&#10;	"step" :"End getAll product flow",&#10;	"data" : {&#10;		"business" :{&#10;			"category" : vars.category&#10;			&#10;		},&#10;		"technical":{&#10;			"payload" : payload&#10;		}&#10;	}&#10;}]'/>
 	</flow>
-	<flow name="sub-product-create" doc:id="41526f15-c1ad-4885-80f0-0aef1df2da92" >
-		<logger level="INFO" doc:name="Start" doc:id="3f4e1dbe-a659-434c-ace8-1111b0244c70" message='#[{&#10;	"step" :"Start createProduct flow",&#10;	"data" : {&#10;		"business" :{&#10;			&#10;		},&#10;		"technical":{&#10;			"payload" : vars.product&#10;		}&#10;	}&#10;}]' />
-		<flow-ref doc:name="callSftpProducts" doc:id="1d4d546c-b885-4885-a0ec-1e43dae04dd1" name="callSftpProducts"/>
-		<set-variable value="#[output json&#10;&#10;var productAdded = vars.product&#10;&#10;var filteredById =&#10;        payload filter (&#10;            $.id == (productAdded.id) as String&#10;        )&#10;&#10;---&#10;&#10;filteredById]" doc:name="[searchId]" doc:id="c2ada3d6-e791-4b8e-bfd0-53c2b19ee90d" variableName="searchId"/>
-		<logger level="INFO" doc:name="MID" doc:id="1585a2a9-a08a-4ae0-9260-c9ad3cbbac21" message='#[{&#10;	"step" :"Mid createProduct flow",&#10;	"data" : {&#10;		"business" :{&#10;			&#10;		},&#10;		"technical":{&#10;			"payload" : vars.search&#10;		}&#10;	}&#10;}]' />
+	<flow name="impl-product-create" doc:id="41526f15-c1ad-4885-80f0-0aef1df2da92" >
+		<logger level="DEBUG" doc:name="Start" doc:id="3f4e1dbe-a659-434c-ace8-1111b0244c70" message='#[{&#10;	"step" :"Start createProduct flow",&#10;	"data" : {&#10;		"business" :{&#10;			"product" : vars.product&#10;		},&#10;		"technical":{&#10;			"payload" : ""&#10;		}&#10;	}&#10;}]' />
+		<flow-ref doc:name="sub-product-callSftp" doc:id="1d4d546c-b885-4885-a0ec-1e43dae04dd1" name="sub-product-callSftp"/>
+		<logger level="DEBUG" doc:name="After Read SFTP Request" doc:id="15b11a81-42f4-452a-b983-c7ce43525440" message='#[{&#10;	"step" :"After Read SFTP Request product flow",&#10;	"data" : {&#10;		"business" :{&#10;			"product" : vars.product&#10;			&#10;		},&#10;		"technical":{&#10;			"payload" : payload&#10;		}&#10;	}&#10;}]' />
+		<set-variable value="#[output json&#10;&#10;var productAdded = vars.product&#10;&#10;var productFilteredById =&#10;        payload filter (&#10;            $.id == (productAdded.id) as String&#10;        )&#10;&#10;---&#10;&#10;productFilteredById]" doc:name="[searchId]" doc:id="c2ada3d6-e791-4b8e-bfd0-53c2b19ee90d" variableName="searchId"/>
+		<logger level="DEBUG" doc:name="After filtering product" doc:id="1585a2a9-a08a-4ae0-9260-c9ad3cbbac21" message='#[{&#10;	"step" :"After filtering product",&#10;	"data" : {&#10;		"business" :{&#10;			"product" : vars.searchId&#10;			&#10;		},&#10;		"technical":{&#10;			"payload" : payload&#10;		}&#10;	}&#10;}]' />
 		<validation:is-empty-collection doc:name="Is empty collection" doc:id="4c5463b9-2a60-4358-ae97-9464f57845b5" values="#[vars.searchId]">
 		</validation:is-empty-collection>
-		<logger level="INFO" doc:name="Mid2" doc:id="01bbc40d-48cf-434b-94cb-04ca6facf523" message='#[{&#10;	"step" :"Mid2 createProduct flow",&#10;	"data" : {&#10;		"business" :{&#10;			&#10;		},&#10;		"technical":{&#10;			"payload" : payload&#10;		}&#10;	}&#10;}]' />
 		<ee:transform doc:name="Transform Message" doc:id="fa670f39-2f68-413e-b9bc-c3b68294323f" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
@@ -279,10 +280,10 @@ var item = vars.product
 ]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<logger level="INFO" doc:name="StartWrite" doc:id="68f5ec1b-b1fe-482d-95d6-bf72603fed80" message='#[{&#10;	"step" :"StartWrite createProduct flow",&#10;	"data" : {&#10;		"business" :{&#10;			&#10;		},&#10;		"technical":{&#10;			"payload" : payload&#10;		}&#10;	}&#10;}]' />
+		<logger level="DEBUG" doc:name="After Transforming data" doc:id="68f5ec1b-b1fe-482d-95d6-bf72603fed80" message='#[{&#10;	"step" :"After Transforming data",&#10;	"data" : {&#10;		"business" :{&#10;			"product" : vars.product&#10;			&#10;		},&#10;		"technical":{&#10;			"payload" : payload&#10;		}&#10;	}&#10;}]' />
 		<sftp:write doc:name="Write" doc:id="7b390136-40c7-4856-8b3e-f8841d65913c" config-ref="SFTP_Config" path="${sftp.fn}" mode="APPEND"/>
 		<set-payload value='#[output json&#10;---&#10;message: "The product has been created successfully"]' doc:name="Set Payload" doc:id="a738f3b1-9e61-4b7d-a53e-d3a8d87c16ab" />
-		<logger level="INFO" doc:name="End" doc:id="5c2002ad-ef22-461f-84ed-f428477f05b2" message='#[{&#10;	"step" :"End createProduct flow",&#10;	"data" : {&#10;		"business" :{&#10;			&#10;		},&#10;		"technical":{&#10;			"payload" : payload&#10;		}&#10;	}&#10;}]' />
+		<logger level="DEBUG" doc:name="End" doc:id="5c2002ad-ef22-461f-84ed-f428477f05b2" message='#[{&#10;	"step" :"End createProduct flow",&#10;	"data" : {&#10;		"business" :{&#10;			"product" : vars.product&#10;		},&#10;		"technical":{&#10;			"payload" : payload&#10;		}&#10;	}&#10;}]' />
 		<error-handler >
 			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="2ea84328-9dab-43b9-b43d-922dcdf63d48" type="VALIDATION:NOT_EMPTY_COLLECTION" >
 				<set-payload value='#[output json&#10;---&#10;message: "The ID already exist."]' doc:name="Product Not Acceptable" doc:id="80735c99-85de-4e64-a250-a4e0b32dc4b0" mimeType="application/json" />
@@ -290,10 +291,12 @@ var item = vars.product
 			</on-error-propagate>
 		</error-handler>
 	</flow>
-	<flow name="sub-product-add-stock" doc:id="061b7c7b-8ca6-40da-9402-2aaf7952ad1e" >
-		<logger level="INFO" doc:name="Start" doc:id="85c9cad3-23cc-433a-96b6-210bcb805f08" message='#[{&#10;	"step" :"Start productAddStock flow",&#10;	"data" : {&#10;		"business" :{&#10;			&#10;		},&#10;		"technical":{&#10;			"payload" : vars.productId&#10;		}&#10;	}&#10;}]' />
-		<flow-ref doc:name="callSftpProducts" doc:id="1b77ec97-c09c-4adf-a9af-5134b007b504" name="callSftpProducts" />
+	<flow name="impl-product-add-stock" doc:id="061b7c7b-8ca6-40da-9402-2aaf7952ad1e" >
+		<logger level="DEBUG" doc:name="Start" doc:id="85c9cad3-23cc-433a-96b6-210bcb805f08" message='#[{&#10;	"step" :"Start productAddStock flow",&#10;	"data" : {&#10;		"business" :{&#10;			"productId" : vars.productId&#10;		},&#10;		"technical":{&#10;			"payload" : ""&#10;		}&#10;	}&#10;}]' />
+		<flow-ref doc:name="sub-product-callSftp" doc:id="1b77ec97-c09c-4adf-a9af-5134b007b504" name="sub-product-callSftp" />
+		<logger level="DEBUG" doc:name="After Read SFTP Request" doc:id="d81afdc2-fbb9-4e9c-8409-07fbbb12269c" message='#[{&#10;	"step" :"After Read SFTP Request product flow",&#10;	"data" : {&#10;		"business" :{&#10;			"productId" : vars.productId&#10;			&#10;		},&#10;		"technical":{&#10;			"payload" : payload&#10;		}&#10;	}&#10;}]' />
 		<set-variable value="#[output json&#10;&#10;&#10; var exists = payload filter ($.id == vars.productId)&#10; &#10;---&#10;exists]" doc:name="[varExists]" doc:id="c451625d-6826-4cdc-ad2d-c609504ec998" variableName="varExists" />
+		<logger level="DEBUG" doc:name="After filtering product" doc:id="6bd43cd0-7b01-4706-b60f-a0d53b5c7623" message='#[{&#10;	"step" :"After filtering product",&#10;	"data" : {&#10;		"business" :{&#10;			"productId" : vars.searchId&#10;			&#10;		},&#10;		"technical":{&#10;			"payload" : payload&#10;		}&#10;	}&#10;}]' />
 		<validation:is-not-empty-collection doc:name="Is not empty collection" doc:id="3021ad96-7041-428c-b248-571311f10284" values="#[vars.varExists]"/>
 		<ee:transform doc:name="Transform Message" doc:id="692f5d15-0be1-4141-b271-0dbbfddfa2b2">
 			<ee:message>
@@ -317,7 +320,10 @@ fun stockFunction(stock, id) =
 })]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<logger level="INFO" doc:name="End" doc:id="84def095-9efd-4eba-a257-28af2117d0c1" message='#[{&#10;	"step" :"End productAddStock flow",&#10;	"data" : {&#10;		"business" :{&#10;			&#10;		},&#10;		"technical":{&#10;			"payload" : payload&#10;		}&#10;	}&#10;}]' />
+		<logger level="DEBUG" doc:name="After Transforming data" doc:id="351c59e9-e7a1-427a-aa8b-c7fd347347f6" message='#[{&#10;	"step" :"After Transforming data",&#10;	"data" : {&#10;		"business" :{&#10;			"productId" : vars.productId&#10;			&#10;		},&#10;		"technical":{&#10;			"payload" : payload&#10;		}&#10;	}&#10;}]' />
+		<sftp:write doc:name="Write" doc:id="1a0dbcc3-e4a5-425b-b2f2-bfdfb0388ef8" config-ref="SFTP_Config" path="${sftp.fn}"/>
+		<set-payload value='#[output json&#10;---&#10;message: "The stock has been changed successfully"]' doc:name="Set Payload" doc:id="faadbcfa-ff5c-4607-8f35-6e5b0377b7e3" />
+		<logger level="DEBUG" doc:name="End" doc:id="84def095-9efd-4eba-a257-28af2117d0c1" message='#[{&#10;	"step" :"End productAddStock flow",&#10;	"data" : {&#10;		"business" :{&#10;			"productId" : vars.productId&#10;			&#10;		},&#10;		"technical":{&#10;			"payload" : payload&#10;		}&#10;	}&#10;}]' />
 		<error-handler >
 			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="b37000a3-8836-429a-92e3-d13a68bd7436" type="VALIDATION:EMPTY_COLLECTION" >
 				<set-payload value='#[output json&#10;---&#10;message: "Product not found"]' doc:name="Product Not Found" doc:id="dcecff2a-49e9-48b8-8113-fc01b3b6d471" mimeType="application/json" />
@@ -325,10 +331,12 @@ fun stockFunction(stock, id) =
 			</on-error-propagate>
 		</error-handler>
 	</flow>
-	<flow name="sub-product-delete" doc:id="d1b795d6-8dc7-479e-93fa-64c50e34f829">
-		<logger level="INFO" doc:name="Start" doc:id="54853e52-1d6c-4b78-9eb2-9ca52c4a4024" message='#[{&#10;	"step" :"Start deleteProduct flow",&#10;	"data" : {&#10;		"business" :{&#10;			&#10;		},&#10;		"technical":{&#10;			"payload" : vars.productId&#10;		}&#10;	}&#10;}]' />
-		<flow-ref doc:name="callSftpProducts" doc:id="93710871-424c-4c22-98a4-0b314b4555e9" name="callSftpProducts" />
+	<flow name="impl-product-delete" doc:id="d1b795d6-8dc7-479e-93fa-64c50e34f829">
+		<logger level="DEBUG" doc:name="Start" doc:id="54853e52-1d6c-4b78-9eb2-9ca52c4a4024" message='#[{&#10;	"step" :"Start deleteProduct flow",&#10;	"data" : {&#10;		"business" :{&#10;			"productId" : vars.productId,&#10;			"quantity" : vars.quantity&#10;		},&#10;		"technical":{&#10;			"payload" : ""&#10;		}&#10;	}&#10;}]' />
+		<flow-ref doc:name="sub-product-callSftp" doc:id="93710871-424c-4c22-98a4-0b314b4555e9" name="sub-product-callSftp" />
+		<logger level="DEBUG" doc:name="After Read SFTP Request" doc:id="18d3280e-8b6d-4f2b-862e-b1cc5d97c3e5" message='#[{&#10;	"step" :"After Read SFTP Request product flow",&#10;	"data" : {&#10;		"business" :{&#10;			"productId" : vars.productId,&#10;			"quantity" : vars.quantity&#10;			&#10;		},&#10;		"technical":{&#10;			"payload" : payload&#10;		}&#10;	}&#10;}]' />
 		<set-variable value="#[output json&#10;&#10;&#10; var exists = payload filter ($.id == vars.productId)&#10; &#10;---&#10;exists]" doc:name="[varExists]" doc:id="247785c9-3cdd-4fed-990a-b3814a7e78b0" variableName="varExists" />
+		<logger level="DEBUG" doc:name="After filtering product" doc:id="03ee394a-6668-4e48-b6e4-141329c0a1f7" message='#[{&#10;	"step" :"After filtering product",&#10;	"data" : {&#10;		"business" :{&#10;			"productId" : vars.productId,&#10;			"quantity" : vars.quantity,&#10;			"productExists" : vars.varExists&#10;			&#10;		},&#10;		"technical":{&#10;			"payload" : payload&#10;		}&#10;	}&#10;}]' />
 		<validation:is-not-empty-collection doc:name="Is not empty collection" doc:id="d183fe3c-5b28-4268-8910-7bcf0c336e47" values="#[vars.varExists]" />
 		<choice doc:name="Choice" doc:id="4d46ed98-af88-4474-b04f-622334ebe420">
 			<when expression="#[vars.quantity != null]">
@@ -374,9 +382,10 @@ filteredProducts]]></ee:set-payload>
 		</ee:transform>
 			</otherwise>
 		</choice>
+		<logger level="DEBUG" doc:name="After Transforming data" doc:id="102726f8-e512-4397-9533-fbeb4a1387c8" message='#[{&#10;	"step" :"After Transforming data",&#10;	"data" : {&#10;		"business" :{&#10;		"productId" : vars.productId,&#10;		"quantity" : vars.quantity&#10;			&#10;		},&#10;		"technical":{&#10;			"payload" : payload&#10;		}&#10;	}&#10;}]' />
 		<sftp:write doc:name="Write" doc:id="fe478525-f480-4f6b-8df5-f3227075c1c8" config-ref="SFTP_Config" path="${sftp.fn}" />
 		<set-payload value='#[output json&#10;---&#10;message: "The changes has been aplied successfully"]' doc:name="Set Payload" doc:id="26b311d0-2008-4ecc-9902-02c95fad4d53" />
-		<logger level="INFO" doc:name="End" doc:id="d82bcc29-8074-4667-8568-98f1a426fcdf" message='#[{&#10;	"step" :"End deleteProduct flow",&#10;	"data" : {&#10;		"business" :{&#10;			&#10;		},&#10;		"technical":{&#10;			"payload" : payload&#10;		}&#10;	}&#10;}]' />
+		<logger level="DEBUG" doc:name="End" doc:id="d82bcc29-8074-4667-8568-98f1a426fcdf" message='#[{&#10;	"step" :"End deleteProduct flow",&#10;	"data" : {&#10;		"business" :{&#10;			"productId" : vars.productId,&#10;			"quantity" : vars.quantity&#10;			&#10;		},&#10;		"technical":{&#10;			"payload" : payload&#10;		}&#10;	}&#10;}]' />
 		<error-handler>
 			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="d88805e0-8fdb-4f98-bfdf-0915a5183e5f" type="VALIDATION:EMPTY_COLLECTION">
 				<set-payload value='#[output json&#10;---&#10;message: "Product not found"]' doc:name="Product Not Found" doc:id="87beae0f-a58a-45be-a23d-b5427050c66f" mimeType="application/json" />
@@ -384,7 +393,7 @@ filteredProducts]]></ee:set-payload>
 			</on-error-propagate>
 		</error-handler>
 	</flow>
-	<flow name="callSftpProducts" doc:id="b071d8b9-e272-4e03-935c-989d8bd0fb9a" >
+	<flow name="sub-product-callSftp" doc:id="b071d8b9-e272-4e03-935c-989d8bd0fb9a" >
 		<sftp:read doc:name="Read" doc:id="0aea57d7-964e-4bc7-8750-3146a6d71ce1" config-ref="SFTP_Config" path="${sftp.fn}" />
 	</flow>
 </mule>
